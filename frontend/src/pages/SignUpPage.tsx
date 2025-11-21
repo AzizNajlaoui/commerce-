@@ -56,7 +56,17 @@ export default function SignUpPage() {
       }
     }
   };
+  const { data: session, isPending } = authClient.useSession();
 
+  if (session) {
+    navigate("/");
+  }
+  if (isPending)
+    return (
+      <div className="h-[90vh] w-screen flex items-center justify-center">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
   return (
     <div className="max-w-md mx-auto my-12 p-6 border rounded-md shadow-sm">
       <h1 className="text-2xl font-semibold mb-4">Create an account</h1>

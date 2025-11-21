@@ -3,8 +3,16 @@ import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export default function SignInPage() {
+  const navigate = useNavigate();
+  const { data: session, isPending } = authClient.useSession();
+
+  if (session) {
+    navigate("/");
+  }
+
   const signInSchema = z.object({
     email: z.string().email("Please enter a valid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
@@ -22,6 +30,7 @@ export default function SignInPage() {
   >({});
 
   const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -49,6 +58,14 @@ export default function SignInPage() {
       }
     }
   };
+
+  if (isPending) {
+    return (
+      <div className="h-[90vh] w-screen flex items-center justify-center">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-md mx-auto my-12 p-6 border rounded-md shadow-sm">
